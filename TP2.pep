@@ -1,8 +1,12 @@
 
 ;Bloc 2 : Le calcul de la longueur de msg.
-LDA enc,i
-SUBA msg,i
-STA msgSize, d
+main: LDA enc, i 
+      SUBA msg, i
+      SUBA 1, i ; Je pense qu'il a un charactere nul qui le rend a 35 et non 34.
+      STA msgSize, d
+
+      CALL verif
+      STOP
 
 ;Bloc 3: Le sous-programme verif.
 ; =========================================================================== 
@@ -11,12 +15,15 @@ STA msgSize, d
 ; Entree : Adresse de msg ( dans la pile )  
 ; Sortie : Stopper le programme si mauvais message  
 ; ===========================================================================  
-verif: RET0
-
+verif:   LDA msg, i
+         SUBSP msgSize, i
+         STRO msg, d 
+         BRLE 10 ,i
+         RET0
 ;Bloc 4: Le sous-programme phiInvA.
 ; =========================================================================== 
 ; Sous - programme : phiInvA 
-; Applique la fonction phi_Inv_A sur msg , et é cris dans vers msgPhi 
+; Applique la fonction phi_Inv_A sur msg , et écris dans vers msgPhi 
 ; Entree : Adresse du msg (SP +2) 
 ; Sortie : msgPhi est modifié 
 ; =========================================================================== 
@@ -77,7 +84,6 @@ distrib: RET0
 FREQUENC: RET0
 
 
-
 ; Les directives
 msgLong: .ASCII "Le message est de longueur : \x00" 
 welcome: .ASCII "Bienvenue dans le TP2\nLe message est : \x00"
@@ -99,3 +105,5 @@ CLE: .EQUATE 10
 
 msgFreq: .BLOCK 26
 codeFreq: .BLOCK 26
+
+.END
