@@ -4,8 +4,11 @@ main: LDA enc, i
       SUBA msg, i
       SUBA 1, i ; Je pense qu'il a un charactere nul qui le rend a 35 et non 34.
       STA msgSize, d
-
+      LDA msg, i
+      SUBSP 2,i
+      STA 0,s
       CALL verif
+      ADDA 2,s
       STOP
 
 ;Bloc 3: Le sous-programme verif.
@@ -15,11 +18,11 @@ main: LDA enc, i
 ; Entree : Adresse de msg ( dans la pile )  
 ; Sortie : Stopper le programme si mauvais message  
 ; ===========================================================================  
-verif:   LDA msg, i
-         SUBSP msgSize, i
-         STRO msg, d 
-         BRLE 10 ,i
-         RET0
+verif:  SUBSP 2,i 
+        LDA 2, s
+         
+        RET0
+
 ;Bloc 4: Le sous-programme phiInvA.
 ; =========================================================================== 
 ; Sous - programme : phiInvA 
