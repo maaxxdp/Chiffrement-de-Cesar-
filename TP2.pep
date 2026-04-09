@@ -4,11 +4,13 @@ main: LDA enc, i
       SUBA msg, i
       SUBA 1, i ; Je pense qu'il a un charactere nul qui le rend a 35 et non 34.
       STA msgSize, d
+; Loader le message dans l'accumulateur pour stoker l'adresse memoire
       LDA msg, i
+; SUBSP donne l'espace memoire dans la pile
       SUBSP 2,i
-      STA 0,s
+      STA 0,s ; Loader l'adresse dans la pile 
       CALL verif
-      ADDA 2,s
+      CALL phiInvA
       STOP
 
 ;Bloc 3: Le sous-programme verif.
@@ -18,10 +20,7 @@ main: LDA enc, i
 ; Entree : Adresse de msg ( dans la pile )  
 ; Sortie : Stopper le programme si mauvais message  
 ; ===========================================================================  
-verif:  SUBSP 2,i 
-        LDA 2, s
-         
-        RET0
+verif:   RET0
 
 ;Bloc 4: Le sous-programme phiInvA.
 ; =========================================================================== 
@@ -30,7 +29,27 @@ verif:  SUBSP 2,i
 ; Entree : Adresse du msg (SP +2) 
 ; Sortie : msgPhi est modifié 
 ; =========================================================================== 
-phiInvA: RET0
+phiInvA: SUBSP 2,i
+         LDA 0,i
+         STA 0,s
+         BR BOUCLE
+BOUCLE: LDA 0,s
+        CPA msgSize,d
+        BRGE fin
+
+        LDX 0,s
+        LDA msg, x
+        
+        SUBA msgPhi,x
+        
+        LDA 0,s
+        ADDA 1,i
+        STA 0,s
+         
+        BR BOUCLE
+
+fin:    ADDSP 2,i
+        RET0
 
 ;Bloc 5: Le sous-programme CESARENC. 
 ;=========================================================================== 
