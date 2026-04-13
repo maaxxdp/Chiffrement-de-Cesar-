@@ -33,22 +33,23 @@ phiInvA: SUBSP 2,i
          LDA 0,i
          STA 0,s
          BR BOUCLE
-BOUCLE: LDA 0,s
-        CPA msgSize,d
-        BRGE fin
+BOUCLE:  LDA 0,s
+         CPA msgSize,d
+         BRGE fin
 
-        LDX 0,s
-        LDA msg, x
-        
-        SUBA msgPhi,x
-        
-        LDA 0,s
-        ADDA 1,i
-        STA 0,s
+         LDX 0,s     ;msg[i]
+         LDA msg, x 
          
-        BR BOUCLE
+         SUBA A,d 
+         STA msgPhi,x
 
-fin:    ADDSP 2,i
+         LDA 0,s
+         ADDA 1,i
+         STA 0,s
+
+         BR BOUCLE
+
+fin:     ADDSP 2,i
         RET0
 
 ;Bloc 5: Le sous-programme CESARENC. 
