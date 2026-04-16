@@ -16,7 +16,7 @@ main: LDA enc, i
 ;Bloc 3: Le sous-programme verif.
 ; =========================================================================== 
 ; Sous - programe : verif 
-; Doit vérifier si le message fourni en référence est bien composé de lettre majuscule seulement. 
+; Doit vÃ©rifier si le message fourni en rÃ©fÃ©rence est bien composÃ© de lettre majuscule seulement. 
 ; Entree : Adresse de msg ( dans la pile )  
 ; Sortie : Stopper le programme si mauvais message  
 ; ===========================================================================  
@@ -25,9 +25,9 @@ verif:   RET0
 ;Bloc 4: Le sous-programme phiInvA.
 ; =========================================================================== 
 ; Sous - programme : phiInvA 
-; Applique la fonction phi_Inv_A sur msg , et écris dans vers msgPhi 
+; Applique la fonction phi_Inv_A sur msg , et Ã©cris dans vers msgPhi 
 ; Entree : Adresse du msg (SP +2) 
-; Sortie : msgPhi est modifié 
+; Sortie : msgPhi est modifiÃ© 
 ; =========================================================================== 
 phiInvA: SUBSP 2,i
          LDA 0,i
@@ -57,32 +57,62 @@ fin:     ADDSP 2,i
 ; Sous - programme : CESARENC 
 ; Effectue le chiffrement de Cesar ( msgPhi vers encPhi ) 
 ; Entree : Utilise msgPhi et CLE 
-; Sortie : encPhi est updaté 
+; Sortie : encPhi est updatÃ© 
 ; =========================================================================== 
-CESARENC: RET0
+CESARENC: LDX 0,i
+          BR FOR
+
+; for(i=0; i<msgSize; i++)
+FOR:      CPX msgSize,d
+          BRGE FIN
+          LDA msgPhi,x
+          ADDA CLE,i
+          CPA sizeA,i
+          BRLT OK
+          SUBA sizeA,i
+
+OK:       STA encPhi,x
+          ADDX 1,i
+          BR FOR
+
+FIN:      RET0
 
 ;Bloc 6: Le sous-programme STRO_CES. 
 ; =========================================================== 
 ; Sous - programme : STRO_CES 
-; Affiche le message (en format Cesar de 0 à 25) et passe à la ligne 
+; Affiche le message (en format Cesar de 0 Ã  25) et passe Ã  la ligne 
 ; Entree : msg (SP +2) 
 ; Sortie : 
 ; =========================================================== 
-STRO_CES: RET0
+STRO_CES: LDX 0,i 
 
+FOR:      CPX msgSize,d
+          BRGE FIN
+          LDA 2,s 
+          ADDA X,i
+          LDBYTEA
+          ADDA A,i
+          CHARO A,i
+          ADDX 1,i
+          BR FOR
+
+FIN:      LDA '\n',i
+          CHARO A,i
+
+RET0
 ;Bloc 7: Le sous-programme CESARDEC.
 ; =========================================================== 
 ; Sous - programme : CESARDEC
 ; Effectue le chiffrement de Cesar ( encPhi vers decPhi )
 ; Entree : Utilise encPhi et CLE
-; Sortie : decPhi est updaté
+; Sortie : decPhi est updatÃ©
 ; =========================================================== 
 CESARDEC: RET0
 
 ;Bloc 8: Le sous-programme FORCE.
 ; =========================================================== 
 ; Sous - programme : FORCE
-; Effectue une attaque par force brute , essaie et affiche les 25 clés
+; Effectue une attaque par force brute , essaie et affiche les 25 clÃ©s
 ; Entree : decPhi
 ; Sortie : Sortie dans le terminal
 ; =========================================================== 
@@ -100,9 +130,9 @@ distrib: RET0
 ;Bloc 10: Le sous-programme FREQUENC
 ; =========================================================== 
 ; Sous - programme : FREQUENC
-; Attaque par analyse fré quenciel
+; Attaque par analyse frÃ© quenciel
 ; Entree : decPhi
-; Sortie : Doit afficher les diff é rents dé codages , ainsi que la clé testée
+; Sortie : Doit afficher les diff Ã© rents dÃ© codages , ainsi que la clÃ© testÃ©e
 ; =========================================================== 
 FREQUENC: RET0
 
