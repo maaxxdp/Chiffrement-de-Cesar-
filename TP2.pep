@@ -11,6 +11,16 @@ main: LDA enc, i
       STA 0,s ; Loader l'adresse dans la pile 
       CALL verif
       CALL phiInvA
+      SUBSP 2,i
+      CALL CESARENC
+      ADDSP 2,i
+      SUBSP 2,i
+      
+      LDA encPhi, i
+      STA 0,s
+
+      CALL STRO_CES
+      ADDSP 2,i
       STOP
 
 ;Bloc 3: Le sous-programme verif.
@@ -60,11 +70,11 @@ fin:     ADDSP 2,i
 ; Sortie : encPhi est updat√© 
 ; =========================================================================== 
 CESARENC: LDX 0,i
-          BR FOR
+          BR FOR2
 
 ; for(i=0; i<msgSize; i++)
-FOR:      CPX msgSize,d
-          BRGE FIN
+FOR2:      CPX msgSize,d
+          BRGE FIN1
           LDA msgPhi,x
           ADDA CLE,i
           CPA sizeA,i
@@ -73,33 +83,32 @@ FOR:      CPX msgSize,d
 
 OK:       STA encPhi,x
           ADDX 1,i
-          BR FOR
+          BR FOR2
 
-FIN:      RET0
+FIN1:      RET0
 
 ;Bloc 6: Le sous-programme STRO_CES. 
 ; =========================================================== 
 ; Sous - programme : STRO_CES 
-; Affiche le message (en format Cesar de 0 √† 25) et passe √† la ligne 
+; Affiche le message (en format Cesar de 0 √  25) et passe √  la ligne 
 ; Entree : msg (SP +2) 
 ; Sortie : 
 ; =========================================================== 
 STRO_CES: LDX 0,i 
+          SUBSP 2,i
 
-FOR:      CPX msgSize,d
-          BRGE FIN
+FOR4:     CPX msgSize,d
+          BRGE FIN2
           LDA 2,s 
-          ADDA X,i
-          LDBYTEA
+          LDBYTEA 4,sxf
           ADDA A,i
           CHARO A,i
           ADDX 1,i
-          BR FOR
+          BR FOR2
 
-FIN:      LDA '\n',i
+FIN2:      LDA '\n',i
           CHARO A,i
-
-RET0
+          RET0
 ;Bloc 7: Le sous-programme CESARDEC.
 ; =========================================================== 
 ; Sous - programme : CESARDEC
